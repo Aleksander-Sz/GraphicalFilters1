@@ -543,5 +543,78 @@ namespace CG_Lab1
             Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
+
+        private void KMeansButton_Click(object sender, EventArgs e)
+        {
+            if (Image == null)
+            {
+                return;
+            }
+            int levelCount = Decimal.ToInt32(DitherK.Value);
+            if (levelCount < 1)
+            {
+                ;
+            }
+            Random gen = new Random();
+            double diff, minDist;
+            int chosen = 0;
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            int[] redCenters = new int[levelCount];
+            int[] greenCenters = new int[levelCount];
+            int[] blueCenters = new int[levelCount];
+            for(int i=0;i<levelCount;i++)
+            {
+                redCenters[i] = gen.Next() % 256;
+                greenCenters[i] = gen.Next() % 256;
+                blueCenters[i] = gen.Next() % 256;
+            }
+            int[] pixelGroup = new int[ImageArray.Length/3];
+            for(int i=0; i<ImageArray.Length/3; i++)
+            {
+                minDist = 1000;
+                for(int j=0;j<levelCount;j++)
+                {
+                    diff = Math.Sqrt(Math.Pow(redCenters[j] - ImageArray[i * 3], 2) + Math.Pow(greenCenters[j] - ImageArray[i * 3 + 1], 2) + Math.Pow(blueCenters[j] - ImageArray[i * 3 + 2], 2));
+                    if(diff<minDist)
+                    {
+                        minDist = diff;
+                        chosen = j;
+                    }
+                }
+                pixelGroup[i] = chosen;
+                /*ImageArray[i * 3] = (byte)redCenters[chosen];
+                ImageArray[i * 3 + 1] = (byte)greenCenters[chosen];
+                ImageArray[i * 3 + 2] = (byte)blueCenters[chosen];*/
+            }
+            int[] groupCounts = new int[levelCount];
+            int[] groupSumsRed = new int[levelCount];
+            int[] groupSumsGreen = new int[levelCount];
+            int[] groupSumsBlue = new int[levelCount];
+            for (int j = 0; j < pixelGroup.Length; j++)
+            {
+                groupCounts[pixelGroup[j]]++;
+                groupSumsRed[pixelGroup[j]] += ImageArray[j * 3];
+                groupSumsGreen[pixelGroup[j]] += ImageArray[j * 3 + 1];
+                groupSumsBlue[pixelGroup[j]] += ImageArray[j * 3 + 2];
+            }
+            for(int i=0;i<levelCount;i++)
+            {
+                if (groupCounts[i] ==0)
+                {
+                    continue;
+                }
+                redCenters[i] = groupSumsRed[i] / groupCounts[i];
+                greenCenters[i] = groupSumsGreen[i] / groupCounts[i];
+                blueCenters[i] = groupSumsBlue[i] / groupCounts[i];
+            }
+            for (int i = 0; i < ImageArray.Length / 3; i++)
+            {
+                ImageArray[i * 3] = (byte)redCenters[pixelGroup[i]];
+                ImageArray[i * 3 + 1] = (byte)greenCenters[pixelGroup[i]];
+                ImageArray[i * 3 + 2] = (byte)blueCenters[pixelGroup[i]];
+            }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
+            pictureBox1.Image = Image;
+        }
     }
 }
