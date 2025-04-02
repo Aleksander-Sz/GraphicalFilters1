@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
@@ -590,23 +591,44 @@ namespace CG_Lab1
             int[] groupSumsRed = new int[levelCount];
             int[] groupSumsGreen = new int[levelCount];
             int[] groupSumsBlue = new int[levelCount];
-            for (int j = 0; j < pixelGroup.Length; j++)
+            //iterations:
+            double error = 100;
+            bool endFlag = true;
+            while (endFlag)
             {
-                groupCounts[pixelGroup[j]]++;
-                groupSumsRed[pixelGroup[j]] += ImageArray[j * 3];
-                groupSumsGreen[pixelGroup[j]] += ImageArray[j * 3 + 1];
-                groupSumsBlue[pixelGroup[j]] += ImageArray[j * 3 + 2];
-            }
-            for(int i=0;i<levelCount;i++)
-            {
-                if (groupCounts[i] ==0)
+                endFlag = false;
+                for (int i = 0;i<levelCount;i++)
                 {
-                    continue;
+                    groupCounts[i] = 0;
+                    groupSumsRed[i] = 0;
+                    groupSumsGreen[i] = 0;
+                    groupSumsBlue[i] = 0;
                 }
-                redCenters[i] = groupSumsRed[i] / groupCounts[i];
-                greenCenters[i] = groupSumsGreen[i] / groupCounts[i];
-                blueCenters[i] = groupSumsBlue[i] / groupCounts[i];
+                for (int j = 0; j < pixelGroup.Length; j++)
+                {
+                    groupCounts[pixelGroup[j]]++;
+                    groupSumsRed[pixelGroup[j]] += ImageArray[j * 3];
+                    groupSumsGreen[pixelGroup[j]] += ImageArray[j * 3 + 1];
+                    groupSumsBlue[pixelGroup[j]] += ImageArray[j * 3 + 2];
+                }
+                for (int i = 0; i < levelCount; i++)
+                {
+                    if (groupCounts[i] == 0)
+                    {
+                        continue;
+                    }
+                    if (redCenters[i] / (groupSumsRed[i] / groupCounts[i]) > 1.01)
+                        endFlag = true;
+                    if (greenCenters[i] / (groupSumsGreen[i] / groupCounts[i]) > 1.01)
+                        endFlag = true;
+                    if (blueCenters[i] / (groupSumsBlue[i] / groupCounts[i]) > 1.01)
+                        endFlag = true;
+                    redCenters[i] = groupSumsRed[i] / groupCounts[i];
+                    greenCenters[i] = groupSumsGreen[i] / groupCounts[i];
+                    blueCenters[i] = groupSumsBlue[i] / groupCounts[i];
+                }
             }
+            // final colors
             for (int i = 0; i < ImageArray.Length / 3; i++)
             {
                 ImageArray[i * 3] = (byte)redCenters[pixelGroup[i]];
