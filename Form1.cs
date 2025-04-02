@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -70,12 +71,16 @@ namespace CG_Lab1
 
         private void button4_Click(object sender, EventArgs e) // reset
         {
-            Image = OriginalImage;
+            Image = new Bitmap(OriginalImage);
             pictureBox1.Image = Image;
         }
 
         private void button5_Click(object sender, EventArgs e) // invert
         {
+            if (Image == null)
+            {
+                return;
+            }
             byte[] ImageArray = Program.ImageToByteArray(Image,out stride);
             for(int i = 0; i < Image.Height*stride;i+=3)
             {
@@ -89,20 +94,19 @@ namespace CG_Lab1
 
         private void button6_Click(object sender, EventArgs e) // brightness correction
         {
-            if(Image==null)
+            if (Image == null)
             {
                 return;
             }
             int brightness = 10;
-            for (int i = 0; i < Image.Width; i++)
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            for (int i = 0; i < Image.Height * stride; i += 3)
             {
-                for (int j = 0; j < Image.Height; j++)
-                {
-                    Color OnePixel = Image.GetPixel(i, j);
-                    Color InvertedPixel = Color.FromArgb(Clamp(brightness + OnePixel.R), Clamp(brightness + OnePixel.G), Clamp(brightness + OnePixel.B));
-                    Image.SetPixel(i, j, InvertedPixel);
-                }
+                ImageArray[i] = (byte)(Clamp(ImageArray[i] + brightness));
+                ImageArray[i + 1] = (byte)(Clamp(ImageArray[i+1] + brightness));
+                ImageArray[i + 2] = (byte)(Clamp(ImageArray[i+2] + brightness));
             }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
         protected int Clamp(double number)
@@ -113,50 +117,42 @@ namespace CG_Lab1
                 return 255;
             return (int)number;
         }
-        private void button7_Click(object sender, EventArgs e)
+        private void button7_Click(object sender, EventArgs e) // contrast enhancement
         {
             if (Image == null)
             {
                 return;
             }
             double alpha = 1.45;
-            for (int i = 0; i < Image.Width; i++)
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            for (int i = 0; i < Image.Height * stride; i += 3)
             {
-                for (int j = 0; j < Image.Height; j++)
-                {
-                    Color OnePixel = Image.GetPixel(i, j);
-                    Color InvertedPixel = Color.FromArgb(Clamp((OnePixel.R-128)*alpha+128), Clamp((OnePixel.G - 128) * alpha + 128), Clamp((OnePixel.B - 128) * alpha + 128));
-                    Image.SetPixel(i, j, InvertedPixel);
-                }
+                ImageArray[i] = (byte)(Clamp((ImageArray[i] - 128) * alpha + 128));
+                ImageArray[i + 1] = (byte)(Clamp((ImageArray[i+1] - 128) * alpha + 128));
+                ImageArray[i + 2] = (byte)(Clamp((ImageArray[i+2] - 128) * alpha + 128));
             }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
 
-        private void button8_Click(object sender, EventArgs e)
+        private void button8_Click(object sender, EventArgs e) // gamma correction
         {
             if (Image == null)
             {
                 return;
             }
             double gamma = 0.75;
-            for (int i = 0; i < Image.Width; i++)
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            for (int i = 0; i < Image.Height * stride; i += 3)
             {
-                for (int j = 0; j < Image.Height; j++)
-                {
-                    Color OnePixel = Image.GetPixel(i, j);
-                    double C1 = (double)OnePixel.R / 255;
-                    double C2 = (double)OnePixel.G / 255;
-                    double C3 = (double)OnePixel.B / 255;
-                    C1 = Math.Pow(C1, gamma) * 255;
-                    C2 = Math.Pow(C2, gamma) * 255;
-                    C3 = Math.Pow(C3, gamma) * 255;
-                    Color InvertedPixel = Color.FromArgb((int)C1, (int)C2, (int)C3);
-                    Image.SetPixel(i, j, InvertedPixel);
-                }
+                ImageArray[i] = (byte)(Math.Pow((double)ImageArray[i] / 255, gamma) * 255);
+                ImageArray[i + 1] = (byte)(Math.Pow((double)ImageArray[i+1] / 255, gamma) * 255);
+                ImageArray[i + 2] = (byte)(Math.Pow((double)ImageArray[i+2] / 255, gamma) * 255);
             }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
-        private Bitmap ApplyConvolution(Bitmap original, int[,] kernel, int total)
+        /*private Bitmap ApplyConvolution(Bitmap original, int[,] kernel, int total)
         {
             int size = 3;  // Hardcoded, not suitable for kernels of different sizes
             int k = (size-1)/2;
@@ -206,6 +202,68 @@ namespace CG_Lab1
             //Color color1 = Color.FromArgb(100, 0, 0);
             //final.SetPixel(10, 10, color1);
             //pictureBox2.Image = final;
+            return final;
+        }*/
+        private Bitmap ApplyConvolution(Bitmap original, int[,] kernel, int total)
+        {
+            if (original == null)
+            {
+                return original;
+            }
+            byte[] ImageArray = Program.ImageToByteArray(original, out stride);
+            byte[] NewImageArray = new byte[ImageArray.Length];
+            int size = kernel.GetLength(0);
+            int k = (size - 1) / 2;
+            int pixelIndex;
+            for (int i = 0; i < original.Height; i++)
+            {
+                int sumR = 0, sumG = 0, sumB = 0;
+                for (int j = 0; j < original.Width; j++)
+                {
+                    // now for the kernels
+                    for (int x = -k; x <= k; x++)
+                    {
+                        for (int y = -k; y <= k; y++)
+                        {
+                            int xx = x + j, yy = y + i;
+                            if (xx < 0)
+                            {
+                                xx = 0;
+                            }
+                            if (xx >= original.Width)
+                            {
+                                xx = original.Width - 1;
+                            }
+                            if (yy < 0)
+                            {
+                                yy = 0;
+                            }
+                            if (yy >= original.Height)
+                            {
+                                yy = original.Height - 1;
+                            }
+                            pixelIndex = (stride * yy) + (xx * 3);
+                            //color = original.GetPixel(xx, yy)
+                            sumR += ImageArray[pixelIndex] * kernel[x + k, y + k];
+                            sumG += ImageArray[pixelIndex + 1] * kernel[x + k, y + k];
+                            sumB += ImageArray[pixelIndex + 2] * kernel[x + k, y + k];
+                        }
+                    }
+                    pixelIndex = (stride * i) + (j * 3);
+                    //color = Color.FromArgb(Clamp(sumR / total), Clamp(sumG / total), Clamp(sumB / total));
+                    //final.SetPixel(i, j, color);
+                    NewImageArray[pixelIndex] = (byte)Clamp(sumR/total);
+                    NewImageArray[pixelIndex + 1] = (byte)Clamp(sumG/total);
+                    NewImageArray[pixelIndex + 2] = (byte)Clamp(sumB/total);
+                    sumR = 0;
+                    sumG = 0;
+                    sumB = 0;
+                }
+            }
+            //Color color1 = Color.FromArgb(100, 0, 0);
+            //final.SetPixel(10, 10, color1);
+            //pictureBox2.Image = final;
+            Bitmap final = Program.ByteArrayToImage(NewImageArray, Image.Width, Image.Height, stride);
             return final;
         }
 
