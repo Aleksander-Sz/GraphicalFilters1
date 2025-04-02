@@ -1,0 +1,10 @@
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\bin\Debug\CG_Lab1.exe.config
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\bin\Debug\CG_Lab1.exe
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\bin\Debug\CG_Lab1.pdb
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.csproj.AssemblyReference.cache
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.Form1.resources
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.Properties.Resources.resources
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.csproj.GenerateResource.cache
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.csproj.CoreCompileInputs.cache
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.exe
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.pdb
