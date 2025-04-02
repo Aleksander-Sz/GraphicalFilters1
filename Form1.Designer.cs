@@ -50,6 +50,7 @@
             this.DitherButton = new System.Windows.Forms.Button();
             this.DitherK = new System.Windows.Forms.NumericUpDown();
             this.KMeansButton = new System.Windows.Forms.Button();
+            this.HSVButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
@@ -306,11 +307,22 @@
             this.KMeansButton.UseVisualStyleBackColor = true;
             this.KMeansButton.Click += new System.EventHandler(this.KMeansButton_Click);
             // 
+            // HSVButton
+            // 
+            this.HSVButton.Location = new System.Drawing.Point(752, 509);
+            this.HSVButton.Name = "HSVButton";
+            this.HSVButton.Size = new System.Drawing.Size(75, 19);
+            this.HSVButton.TabIndex = 23;
+            this.HSVButton.Text = "HSV";
+            this.HSVButton.UseVisualStyleBackColor = true;
+            this.HSVButton.Click += new System.EventHandler(this.HSVButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 587);
+            this.Controls.Add(this.HSVButton);
             this.Controls.Add(this.KMeansButton);
             this.Controls.Add(this.DitherK);
             this.Controls.Add(this.DitherButton);
@@ -368,6 +380,7 @@
         private System.Windows.Forms.Button DitherButton;
         private System.Windows.Forms.NumericUpDown DitherK;
         private System.Windows.Forms.Button KMeansButton;
+        private System.Windows.Forms.Button HSVButton;
     }
 }
 

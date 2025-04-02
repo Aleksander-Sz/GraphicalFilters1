@@ -616,5 +616,11 @@ namespace CG_Lab1
             Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
+
+        private void HSVButton_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2(new Bitmap(Image));
+            form2.Show();
+        }
     }
 }

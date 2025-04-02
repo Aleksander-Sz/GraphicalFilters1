@@ -8,3 +8,4 @@ C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.csproj.GenerateRes
 C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.csproj.CoreCompileInputs.cache
 C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.exe
 C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.pdb
+C:\Users\Zuzia\source\repos\CG_Lab1\CG_Lab1\obj\Debug\CG_Lab1.Form2.resources
