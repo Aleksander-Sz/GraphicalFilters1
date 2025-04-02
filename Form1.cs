@@ -34,7 +34,6 @@ namespace CG_Lab1
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif";
             openFileDialog.Title = "Select an Image File";
-            grayscale = false;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -44,6 +43,7 @@ namespace CG_Lab1
                     Image = new Bitmap(OriginalImage);
                     pictureBox1.Image = Image;
                     pictureBox2.Image = OriginalImage;
+                    grayscale = false;
                 }
                 catch(Exception exception)
                 {
@@ -503,29 +503,33 @@ namespace CG_Lab1
             {
                 return;
             }
+            int levelCount = Decimal.ToInt32(DitherK.Value);
+            if(levelCount<1)
+            {
+                ;
+            }
             Random gen = new Random();
-            int diff, chosen = 0, dist;
+            int diff, chosen = 0, minDist;
             byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
-            for (int i = 0; i < Image.Height * stride; i += 3)
+            for (int i = 0; i < Image.Height * stride; i += 1)
             {
                 if((i%3!=0)&&grayscale)
                 {
                     continue;
                 }
-                int levelCount = Decimal.ToInt32(DitherK.Value);
                 int[] levels = new int[levelCount];
                 for(int j = 0; j < levelCount; j++)
                 {
                     levels[j] = gen.Next()%256;
                 }
                 Array.Sort(levels);
-                dist = 1000;
+                minDist = 1000;
                 for(int j=0; j < levels.Length; j++)
                 {
                     diff = Math.Abs(levels[j] - ImageArray[i]);
-                    if (dist > diff)
+                    if (diff < minDist)
                     {
-                        dist = diff;
+                        minDist = diff;
                         chosen = levels[j];
                     }
                 }
