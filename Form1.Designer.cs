@@ -46,9 +46,13 @@
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.button14 = new System.Windows.Forms.Button();
             this.button15 = new System.Windows.Forms.Button();
+            this.ButtonGreyscale = new System.Windows.Forms.Button();
+            this.DitherButton = new System.Windows.Forms.Button();
+            this.DitherK = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DitherK)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -232,7 +236,7 @@
             this.numericUpDown1.Size = new System.Drawing.Size(50, 20);
             this.numericUpDown1.TabIndex = 16;
             this.numericUpDown1.Value = new decimal(new int[] {
-            1,
+            5,
             0,
             0,
             0});
@@ -259,11 +263,46 @@
             this.button15.UseVisualStyleBackColor = true;
             this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
+            // ButtonGreyscale
+            // 
+            this.ButtonGreyscale.Location = new System.Drawing.Point(764, 483);
+            this.ButtonGreyscale.Name = "ButtonGreyscale";
+            this.ButtonGreyscale.Size = new System.Drawing.Size(75, 19);
+            this.ButtonGreyscale.TabIndex = 19;
+            this.ButtonGreyscale.Text = "Grayscale";
+            this.ButtonGreyscale.UseVisualStyleBackColor = true;
+            this.ButtonGreyscale.Click += new System.EventHandler(this.ButtonGreyscale_Click);
+            // 
+            // DitherButton
+            // 
+            this.DitherButton.Location = new System.Drawing.Point(764, 507);
+            this.DitherButton.Name = "DitherButton";
+            this.DitherButton.Size = new System.Drawing.Size(125, 19);
+            this.DitherButton.TabIndex = 20;
+            this.DitherButton.Text = "Random Dither";
+            this.DitherButton.UseVisualStyleBackColor = true;
+            this.DitherButton.Click += new System.EventHandler(this.DitherButton_Click);
+            // 
+            // DitherK
+            // 
+            this.DitherK.Location = new System.Drawing.Point(845, 483);
+            this.DitherK.Name = "DitherK";
+            this.DitherK.Size = new System.Drawing.Size(44, 20);
+            this.DitherK.TabIndex = 21;
+            this.DitherK.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1000, 587);
+            this.Controls.Add(this.DitherK);
+            this.Controls.Add(this.DitherButton);
+            this.Controls.Add(this.ButtonGreyscale);
             this.Controls.Add(this.button15);
             this.Controls.Add(this.button14);
             this.Controls.Add(this.numericUpDown1);
@@ -288,6 +327,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.DitherK)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -312,6 +352,9 @@
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button button15;
+        private System.Windows.Forms.Button ButtonGreyscale;
+        private System.Windows.Forms.Button DitherButton;
+        private System.Windows.Forms.NumericUpDown DitherK;
     }
 }
 

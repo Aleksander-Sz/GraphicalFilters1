@@ -16,6 +16,7 @@ namespace CG_Lab1
         Bitmap OriginalImage;
         Bitmap Image;
         int stride;
+        bool grayscale;
         public Form1()
         {
             InitializeComponent();
@@ -33,6 +34,7 @@ namespace CG_Lab1
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files|*.bmp;*.jpg;*.jpeg;*.png;*.gif";
             openFileDialog.Title = "Select an Image File";
+            grayscale = false;
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -73,6 +75,7 @@ namespace CG_Lab1
         {
             Image = new Bitmap(OriginalImage);
             pictureBox1.Image = Image;
+            grayscale = false;
         }
 
         private void button5_Click(object sender, EventArgs e) // invert
@@ -474,6 +477,66 @@ namespace CG_Lab1
                     listB.Clear();
                 }
             }
+            pictureBox1.Image = Image;
+        }
+
+        private void ButtonGreyscale_Click(object sender, EventArgs e)
+        {
+            if (Image == null)
+            {
+                return;
+            }
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            for (int i = 0; i < Image.Height * stride; i += 3)
+            {
+                byte average = (byte)((ImageArray[i] + ImageArray[i+1] + ImageArray[i+2])/ 3);
+                ImageArray[i] = ImageArray[i+1] = ImageArray[i+2]  = average;
+            }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
+            pictureBox1.Image = Image;
+            grayscale = true;
+        }
+
+        private void DitherButton_Click(object sender, EventArgs e)
+        {
+            if (Image == null)
+            {
+                return;
+            }
+            Random gen = new Random();
+            int diff, chosen = 0, dist;
+            byte[] ImageArray = Program.ImageToByteArray(Image, out stride);
+            for (int i = 0; i < Image.Height * stride; i += 3)
+            {
+                if((i%3!=0)&&grayscale)
+                {
+                    continue;
+                }
+                int levelCount = Decimal.ToInt32(DitherK.Value);
+                int[] levels = new int[levelCount];
+                for(int j = 0; j < levelCount; j++)
+                {
+                    levels[j] = gen.Next()%256;
+                }
+                Array.Sort(levels);
+                dist = 1000;
+                for(int j=0; j < levels.Length; j++)
+                {
+                    diff = Math.Abs(levels[j] - ImageArray[i]);
+                    if (dist > diff)
+                    {
+                        dist = diff;
+                        chosen = levels[j];
+                    }
+                }
+                ImageArray[i] = (byte)chosen;
+                if((i%3==0)&&grayscale)
+                {
+                    ImageArray[i + 1] = (byte)chosen;
+                    ImageArray[i + 2] = (byte)chosen;
+                }
+            }
+            Image = Program.ByteArrayToImage(ImageArray, Image.Width, Image.Height, stride);
             pictureBox1.Image = Image;
         }
     }
