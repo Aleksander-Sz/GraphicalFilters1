@@ -14,6 +14,7 @@ namespace CG_Lab1
     {
         Bitmap OriginalImage;
         Bitmap Image;
+        int stride;
         public Form1()
         {
             InitializeComponent();
@@ -75,19 +76,14 @@ namespace CG_Lab1
 
         private void button5_Click(object sender, EventArgs e) // invert
         {
-            if (Image == null)
+            byte[] ImageArray = Program.ImageToByteArray(Image,out stride);
+            for(int i = 0; i < Image.Height*stride;i+=3)
             {
-                return;
+                ImageArray[i] = (byte)(255 - ImageArray[i]);
+                ImageArray[i+1] = (byte)(255 - ImageArray[i+1]);
+                ImageArray[i+2] = (byte)(255 - ImageArray[i+2]);
             }
-            for (int i = 0; i < Image.Width; i++)
-            {
-                for(int j = 0; j < Image.Height; j++)
-                {
-                    Color OnePixel = Image.GetPixel(i, j);
-                    Color InvertedPixel = Color.FromArgb(255 - OnePixel.R, 255 - OnePixel.G, 255 - OnePixel.B);
-                    Image.SetPixel(i,j,InvertedPixel);
-                }
-            }
+            Image = Program.ByteArrayToImage(ImageArray,Image.Width,Image.Height, stride);
             pictureBox1.Image = Image;
         }
 
